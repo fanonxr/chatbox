@@ -6,7 +6,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
-import charListStyle from './chatListStyle';
+import chatListStyle from './chatListStyle';
 import Divider from '@material-ui/core/Divider';
 import Button from '@material-ui/core/Button';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -19,12 +19,12 @@ class ChatList extends Component {
     }
 
     selectChat = (index) => {
-        console.log('select chat', index);
+        this.props.selectChatFn(index);
     }
 
     render() {
 
-        const classes = this.props;
+        const { classes } = this.props;
 
         if (this.props.chats.length > 0) {
 
@@ -97,4 +97,4 @@ class ChatList extends Component {
     }
 }
 
-export default withStyles(charListStyle)(ChatList);
+export default withStyles(chatListStyle)(ChatList);

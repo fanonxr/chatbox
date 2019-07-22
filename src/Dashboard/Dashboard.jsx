@@ -1,7 +1,8 @@
 import React, { Component, Fragment } from 'react';
 import ChatList from '../ChatList/ChatList';
-import { withStyles } from '@material-ui/core/styles';
+import { Button, withStyles } from '@material-ui/core';
 import dashboardStyle from '../Dashboard/dashboardStyle';
+import ChatView from '../ChatView/ChatView';
 
 const firebase = require('firebase');
 
@@ -23,10 +24,15 @@ class Dashboard extends Component {
 
     // selecting a chat to view its contents
     selectChat = (chatIndex) => {
-        console.log("Select a chat", chatIndex);
+        console.log("index: " + chatIndex);
+        this.setState({ selectedChat: chatIndex });
     }
 
+    // signout function from firebase
+    signOut = () => firebase.auth().signOut();
+
     componentDidMount = () => {
+        // redirect to login page if not user
         firebase.auth().onAuthStateChanged(async _user => {
             if (!_user) {
                 this.props.history.push('/login');
@@ -48,6 +54,7 @@ class Dashboard extends Component {
     }
 
     render() {
+        const { classes } = this.props;
         return (
             <div id='dashboard-container'>
                 <ChatList
@@ -59,6 +66,16 @@ class Dashboard extends Component {
                     selectedChatIndex={this.state.selectedChat}
                 >
                 </ChatList>
+
+                {
+                    this.state.newChatFormVisible ? null :
+                        <ChatView
+                            user={this.state.email}
+                            chat={this.state.chats[this.state.selectedChat]}
+                        ></ChatView>
+                }
+
+                <Button className={classes.signOutBtn} onClick={this.signOut}> Sign Out </Button>
             </div>
         )
     }
