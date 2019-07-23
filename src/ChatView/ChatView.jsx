@@ -23,7 +23,7 @@ class ChatView extends Component {
             return (
                 <div>
                     <div className={classes.chatHeader}>
-                        Conversation with {chat.users.filter(_user => _user !== user)[0]}
+                        {chat.users.filter(_user => _user !== user)[0]}
                     </div>
                     <main id={'chatview-container'} className={classes.content}>
                         {

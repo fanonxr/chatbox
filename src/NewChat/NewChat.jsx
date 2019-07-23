@@ -82,7 +82,7 @@ class NewChat extends Component {
 
                 <Paper className={classes.paper}>
 
-                    <Typography component="h1" variant="h5">Send A message</Typography>
+                    <Typography component="h1" variant="h5">Send A Message</Typography>
 
                     <form className={classes.form} onSubmit={(e) => this.submitNewChat(e)}>
 

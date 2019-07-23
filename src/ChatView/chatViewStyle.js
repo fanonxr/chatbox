@@ -19,7 +19,7 @@ const styles = theme => ({
         boxSizing: 'border-box',
         wordWrap: 'break-word',
         marginTop: '10px',
-        backgroundColor: '#707BC4',
+        backgroundColor: '#49CF40',
         color: 'white',
         width: '300px',
         borderRadius: '10px'
@@ -32,7 +32,7 @@ const styles = theme => ({
         boxSizing: 'border-box',
         wordWrap: 'break-word',
         marginTop: '10px',
-        backgroundColor: '#707BC4',
+        backgroundColor: '#388FC8',
         color: 'white',
         width: '300px',
         borderRadius: '10px'
