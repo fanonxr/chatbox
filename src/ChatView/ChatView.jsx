@@ -19,13 +19,13 @@ class ChatView extends Component {
         if (chat === undefined) {
             // if there are no chats display an empty main tag
             return (<main id={'chatview-container'} className={classes.content}></main>)
-        } else {
+        } else if (this.props.chat !== undefined) {
             return (
                 <div>
                     <div className={classes.chatHeader}>
                         Conversation with {chat.users.filter(_user => _user !== user)[0]}
                     </div>
-                    <main id={'chatview-container'} classes={classes.content}>
+                    <main id={'chatview-container'} className={classes.content}>
                         {
                             chat.messages.map((_msg, _index) => {
                                 return (

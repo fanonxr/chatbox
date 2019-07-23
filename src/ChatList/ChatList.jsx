@@ -50,7 +50,7 @@ class ChatList extends Component {
                                         <ListItem
                                             onClick={() => this.selectChat(_index)}
                                             className={classes.listItem}
-                                            selected={this.props.selectChatIndex === _index}
+                                            selected={this.props.selectedChatIndex === _index}
                                             alignItems='flex-start'
                                         >
 
