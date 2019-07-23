@@ -1,9 +1,10 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import ChatList from '../ChatList/ChatList';
 import { Button, withStyles } from '@material-ui/core';
 import dashboardStyle from '../Dashboard/dashboardStyle';
 import ChatView from '../ChatView/ChatView';
 import ChatTextBox from '../ChatTextBox/ChatTextBox';
+import NewChat from '../NewChat/NewChat';
 
 const firebase = require('firebase');
 
@@ -16,16 +17,14 @@ class Dashboard extends Component {
         chats: []
     }
 
-    //
-
+    // handling when a user wants to send a new message to a new users
     newChatBtnCliked = () => {
-        console.log("new chat button clicked");
         this.setState({ newChatFormVisible: true, selectedChat: null });
     }
 
     // selecting a chat to view its contents
     selectChat = async (chatIndex) => {
-        await this.setState({ selectedChat: chatIndex });
+        await this.setState({ selectedChat: chatIndex, newChatFormVisible: false });
         this.messageRead();
 
     }
@@ -46,8 +45,6 @@ class Dashboard extends Component {
             // update reciever has read
             firebase.firestore().collection('chats').doc(docKey)
             .update({receiverHasRead: true })
-        } else {
-            console.log("Clicked message where user was sender");
         }
     }
 
@@ -66,6 +63,35 @@ class Dashboard extends Component {
         })
     }
 
+    //
+    goToChat = async (docKey, msg) => {
+        const usersInChat = docKey.split(':');
+        const chat = this.state.chats.find(_chat => usersInChat.every(_user => _chat.users.includes(_user)));
+
+        this.setState({ newChatFormVisible: false });
+        await this.selectChat(this.state.chats.indexOf(chat));
+        this.submitMessage(msg);
+    }
+
+    //
+    newChatSubmit = async (chatObj) => {
+        const docKey = this.buildDocKey(chatObj.sendTo);
+
+        await firebase.firestore().collection('chats').doc(docKey)
+            .set({
+                receiverHasRead: false,
+                users: [this.state.email, chatObj.sendTo],
+                messages: [{
+                    message: chatObj.message,
+                    sender: this.state.email
+                }]
+            })
+
+        // update the state
+        this.setState({ newChatFormVisible: false });
+        this.selectChat(this.state.chats.length - 1);
+    }
+
     componentDidMount = () => {
         // redirect to login page if not user
         firebase.auth().onAuthStateChanged(async _user => {
@@ -82,7 +108,6 @@ class Dashboard extends Component {
                             email: _user.email,
                             chats: chats
                         });
-                        console.log(this.state);
                 })
             }
         })
@@ -119,6 +144,13 @@ class Dashboard extends Component {
                         null
                 }
 
+                {
+                    this.state.newChatFormVisible ?
+                        <NewChat
+                            goToChatFn={this.goToChat}
+                            newChatSubmitFn={this.newChatSubmit}
+                    ></NewChat> : null
+                }
                 <Button className={classes.signOutBtn} onClick={this.signOut}> Sign Out </Button>
             </div>
         )

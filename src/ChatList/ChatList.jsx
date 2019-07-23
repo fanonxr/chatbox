@@ -18,7 +18,7 @@ class ChatList extends Component {
     userIsSender = (chat) => chat.messages[chat.messages.length - 1].sender === this.props.userEmail;
 
     newChat = () => {
-        console.log("New chat");
+        this.props.newChatBtnFn();
     }
 
     selectChat = (index) => {
@@ -44,7 +44,7 @@ class ChatList extends Component {
                     <List>
                         {
                             this.props.chats.map((_chat, _index) => {
-                                console.log(_chat, _index);
+
                                 return (
                                     <div key={_index}>
                                         <ListItem
