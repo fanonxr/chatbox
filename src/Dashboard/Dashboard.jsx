@@ -24,15 +24,32 @@ class Dashboard extends Component {
     }
 
     // selecting a chat to view its contents
-    selectChat = (chatIndex) => {
-        console.log("index: " + chatIndex);
-        this.setState({ selectedChat: chatIndex });
+    selectChat = async (chatIndex) => {
+        await this.setState({ selectedChat: chatIndex });
+        this.messageRead();
+
     }
 
     // signout function from firebase
     signOut = () => firebase.auth().signOut();
 
     buildDocKey = (friend) => [this.state.email, friend].sort().join(':');
+
+    // reciever of messages will get notified
+    clickedChatWhereNotSender = (chatIndex) => this.state.chats[chatIndex].messages[this.state.chats[chatIndex].messages.length - 1].sender !== this.state.email;
+
+    // check to see if the message has been read
+    messageRead = () => {
+        const docKey = this.buildDocKey(this.state.chats[this.state.selectedChat].users.filter(_user => _user !== this.state.email)[0]);
+
+        if (this.clickedChatWhereNotSender(this.state.selectedChat)) {
+            // update reciever has read
+            firebase.firestore().collection('chats').doc(docKey)
+            .update({receiverHasRead: true })
+        } else {
+            console.log("Clicked message where user was sender");
+        }
+    }
 
     submitMessage = (msg) => {
         const docKey = this.buildDocKey(this.state.chats[this.state.selectedChat].users.filter(_user => _user !== this.state.email)[0]);
@@ -97,6 +114,7 @@ class Dashboard extends Component {
                     this.state.selectedChat !== null && !this.state.newChatFormVisible ?
                         <ChatTextBox
                             submitMessageFn={this.submitMessage}
+                            messageReadFn={this.messageRead}
                         ></ChatTextBox> :
                         null
                 }

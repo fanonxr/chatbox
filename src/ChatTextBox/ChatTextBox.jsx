@@ -22,7 +22,7 @@ class ChatTextBox extends Component {
 
     // handling clicked input for submitting
     userClickedInput = () => {
-        console.log("Clicked input");
+        this.props.messageReadFn();
     }
 
     // send message to other user

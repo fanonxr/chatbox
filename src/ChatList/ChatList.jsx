@@ -14,6 +14,9 @@ import NotificationImportant from '@material-ui/icons/NotificationImportant';
 
 class ChatList extends Component {
 
+    // check if user is sender
+    userIsSender = (chat) => chat.messages[chat.messages.length - 1].sender === this.props.userEmail;
+
     newChat = () => {
         console.log("New chat");
     }
@@ -68,7 +71,14 @@ class ChatList extends Component {
                                             >
 
                                             </ListItemText>
-
+                                            {
+                                                _chat.receiverHasRead === false && !this.userIsSender(_chat) ?
+                                                    <ListItemIcon>
+                                                        <NotificationImportant
+                                                            className={classes.unreadMessage}
+                                                        ></NotificationImportant>
+                                                    </ListItemIcon> : null
+                                            }
                                         </ListItem>
                                         <Divider></Divider>
                                     </div>
