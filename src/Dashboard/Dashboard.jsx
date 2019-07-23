@@ -3,6 +3,7 @@ import ChatList from '../ChatList/ChatList';
 import { Button, withStyles } from '@material-ui/core';
 import dashboardStyle from '../Dashboard/dashboardStyle';
 import ChatView from '../ChatView/ChatView';
+import ChatTextBox from '../ChatTextBox/ChatTextBox';
 
 const firebase = require('firebase');
 
@@ -31,6 +32,23 @@ class Dashboard extends Component {
     // signout function from firebase
     signOut = () => firebase.auth().signOut();
 
+    buildDocKey = (friend) => [this.state.email, friend].sort().join(':');
+
+    submitMessage = (msg) => {
+        const docKey = this.buildDocKey(this.state.chats[this.state.selectedChat].users.filter(_user => _user !== this.state.email)[0]);
+
+        // add the message to firebase
+        firebase.firestore().collection('chats').doc(docKey)
+            .update({
+            messages: firebase.firestore.FieldValue.arrayUnion({
+                sender: this.state.email,
+                message: msg,
+                timestamp: Date.now()
+            }),
+                receiverHasRead: false
+        })
+    }
+
     componentDidMount = () => {
         // redirect to login page if not user
         firebase.auth().onAuthStateChanged(async _user => {
@@ -42,7 +60,7 @@ class Dashboard extends Component {
                     .collection('chats')
                     .where('users', 'array-contains', _user.email)
                     .onSnapshot(async res => {
-                        const chats = res.docs.map(_doc => _doc.data())
+                        const chats = res.docs.map(_doc => _doc.data());
                         await this.setState({
                             email: _user.email,
                             chats: chats
@@ -73,6 +91,14 @@ class Dashboard extends Component {
                             user={this.state.email}
                             chat={this.state.chats[this.state.selectedChat]}
                         ></ChatView>
+                }
+
+                {
+                    this.state.selectedChat !== null && !this.state.newChatFormVisible ?
+                        <ChatTextBox
+                            submitMessageFn={this.submitMessage}
+                        ></ChatTextBox> :
+                        null
                 }
 
                 <Button className={classes.signOutBtn} onClick={this.signOut}> Sign Out </Button>
