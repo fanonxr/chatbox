@@ -2,7 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import * as serviceWorker from './serviceWorker';
-import { Route, BrowserRouter as Router } from 'react-router-dom';
+import { Route, BrowserRouter as Router, Redirect } from 'react-router-dom';
+import HomePage from './HomePage/HomePage'
 import Login from './Login/Login';
 import SignUp from './SignUp/SignUp';
 import Dashboard from './Dashboard/Dashboard';
@@ -26,6 +27,8 @@ firebase.initializeApp(firebaseConfig);
 const routing = (
     <Router>
         <div id='routing-container'>
+            <Route exact path='/' component={HomePage}></Route>
+            <Redirect from="/" to="Login"></Redirect>
             <Route path='/login' component={Login} ></Route>
             <Route path='/signup' component={SignUp} ></Route>
             <Route path='/dashboard' component={Dashboard} ></Route>
